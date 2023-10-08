@@ -1,19 +1,13 @@
-using System;
-using System.Security.Cryptography;
 using System.Text;
 using System.Diagnostics;
-using static System.Formats.Asn1.AsnWriter;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using System.Net.Http.Json;
 using Newtonsoft.Json;
 
 public class Test
 {
-    static string clientId = @"///";
-    static string clientSecret = @"///";
+    static string clientId = @"324242308665-sb2qab4bsfarn5h9kt9oq4kq4fvik45q.apps.googleusercontent.com";
+    static string clientSecret = @"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";
     static string auth_url = @"https://accounts.google.com/o/oauth2/v2/auth";
     static string token_url = @"https://oauth2.googleapis.com/token";
     static string redirect_uri = @"http://localhost:8500";
@@ -28,7 +22,6 @@ public class Test
         public string scope { get; set; }
         public string refresh_token { get; set; }
     }
-
     public static string GetRequestGoogle()
     {
         UriBuilder builder = new UriBuilder(auth_url);
@@ -43,7 +36,6 @@ public class Test
         Console.WriteLine("Google request:",requestUrl);
         return requestUrl;
     }
-   
     static async Task<string> GetTokenGoogle(string code)
     {
         UriBuilder builder = new UriBuilder(token_url);
@@ -61,7 +53,6 @@ public class Test
         using (var httpClient = new HttpClient())
         {
             var response = await httpClient.PostAsync(requestUrlToken, null);
-
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
@@ -82,19 +73,15 @@ public class Test
             {
                 Console.WriteLine($"Ошибка при запросе токена. Код статуса: {response.StatusCode}");
             }
-
             return null;
         }
     }
-
     static async Task StartListeningAsync(string url)
     {
         var listener = new HttpListener();
         listener.Prefixes.Add(url);
         listener.Start();
-
         Console.WriteLine($"Сервер начал прослушивание {url}");
-
         while (true)
         {
             try
@@ -107,19 +94,16 @@ public class Test
                 break;
             }
         }
-
         listener.Close();
     }
     static async Task HandleRequestAsync(HttpListenerContext context)
     {
         HttpListenerRequest request = context.Request;
         HttpListenerResponse response = context.Response;
-
         code = request.QueryString["code"];
         string decodedcode = System.Web.HttpUtility.UrlDecode(code);
         code = decodedcode;
         response.Close();
-
         await GetTokenGoogle(code);
         await GetUserInfo(accessTokenGoogle);
     }
@@ -161,31 +145,7 @@ public class Test
 
         string urlToListen = "http://localhost:8500/";
         await StartListeningAsync(urlToListen);
-        Console.WriteLine("Получен код авторизации: " + code);
-        Console.WriteLine("код авторизации: " + code);
-        if (code == null)
-        {
-            Console.WriteLine("код авторизации отсутствует");
-        }
-
         var accessToken = await GetTokenGoogle(await GetTokenGoogle(code));
-
-        string userInfo = await GetUserInfo(accessToken);
-
-        if (userInfo != null)
-        {
-            Console.WriteLine(userInfo);
-        }
-
-        Console.WriteLine("Нажмите Enter для завершения программы...");
-        Console.ReadLine();
+        await GetUserInfo(accessToken);
     }
-
-   
 }
-
-
-
-
-
-

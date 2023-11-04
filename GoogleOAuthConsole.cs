@@ -6,8 +6,8 @@ using Newtonsoft.Json;
 
 public class Test
 {
-    static string clientId = @"324242308665-sb2qab4bsfarn5h9kt9oq4kq4fvik45q.apps.googleusercontent.com";
-    static string clientSecret = @"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";
+    static string clientId = @"///";
+    static string clientSecret = @"///";
     static string auth_url = @"https://accounts.google.com/o/oauth2/v2/auth";
     static string token_url = @"https://oauth2.googleapis.com/token";
     static string redirect_uri = @"http://localhost:8500";
